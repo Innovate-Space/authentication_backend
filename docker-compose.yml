@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+  dev_db:
+    image: postgres
+    ports: 
+      - 5434:5432
+    environment:
+      POSTGRES_USER: innovate
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: auth_db
+    networks:
+      - innovate
+
+  test_db:
+    image: postgres
+    ports: 
+      - 5435:5432
+    environment:
+      POSTGRES_USER: test_innovate
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: test_auth_db
+    networks:
+      - innovate
+networks:
+  innovate:
