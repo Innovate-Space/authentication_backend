@@ -1,7 +1,7 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { Role } from '@prisma/client';
+import { Role, User } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import * as argon2 from 'argon2';
 
@@ -17,6 +17,11 @@ export class AuthenticationService {
     private readonly prisma: PrismaService,
   ) {}
 
+  async getAll(): Promise<User[]> {
+    const users = await this.prisma.user.findMany();
+    return users;
+  }
+
   async login(dto: AuthDto): Promise<AuthResponse> {
     const user = await this.prisma.user.findUnique({
       where: { email: dto.email },
@@ -27,7 +32,7 @@ export class AuthenticationService {
     const userTokens = await this.getTokens(user.id, user.email, user.role);
     return {
       message: 'Login success',
-      tokens: { ...userTokens, access_token: null, refresh_token: null },
+      tokens: { ...userTokens },
       user: {
         firstName: user.firstName,
         email: user.email,
@@ -49,7 +54,7 @@ export class AuthenticationService {
       const userTokens = await this.getTokens(user.id, user.email, user.role);
       return {
         message: 'Account created',
-        tokens: { ...userTokens, access_token: null, refresh_token: null },
+        tokens: { ...userTokens },
         user: {
           firstName: user.firstName,
           email: user.email,
