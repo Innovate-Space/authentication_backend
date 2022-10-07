@@ -18,7 +18,7 @@ import { AuthResponse } from './types';
 export class AuthenticationController {
   constructor(private readonly authService: AuthenticationService) {}
 
-  //@Public()
+  @Public()
   @ApiOkResponse({ type: AuthResponse })
   @Post('sign-up')
   createAccount(@Body() dto: CreateAuthDto): Promise<AuthResponse> {
